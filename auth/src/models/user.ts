@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { Password } from '../services/password'
 
 // 新增用戶的請求參數
 interface UserAttrs {
@@ -26,6 +27,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+})
+
+// 在將 user 資料儲存到 mongo 之前先將密碼加密
+userSchema.pre('save', async function(done) {
+  if (this.isModified('password')) {
+    const hashed = await Password.toHash(this.get('password'))
+    this.set('password', hashed)
+  }
+  done()
 })
 
 // 使用 mongoose statics 新增一個 build 方法, 回傳 new User
