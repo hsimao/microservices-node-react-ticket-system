@@ -18,16 +18,29 @@ interface UserDoc extends mongoose.Document {
   password: string
 }
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-})
+  {
+    // 將查詢 user 資料時返回的資料格式化, 將 _id 改為 id, 並將敏感與多餘屬性刪除
+    toJSON: {
+      transform(doc, ret) {
+        ret.id = ret._id
+        delete ret._id
+        delete ret.password
+        delete ret.__v
+      },
+    },
+  }
+)
 
 // 在將 user 資料儲存到 mongo 之前先將密碼加密
 userSchema.pre('save', async function(done) {
