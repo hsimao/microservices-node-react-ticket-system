@@ -42,7 +42,7 @@ router.post(
         id: user.id,
         email: user.email,
       },
-      'asdf'
+      process.env.JWT_KEY! // 後面驚嘆號要讓 typescript 忽略警告
     )
 
     // 將 JWT 儲存到 session
