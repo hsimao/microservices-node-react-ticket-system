@@ -55,3 +55,12 @@ it('email 重複回傳 400', async () => {
     .send({ email: 'test@gmail.com', password: 'password' })
     .expect(400)
 })
+
+it('在註冊成功後需設置 cookie', async () => {
+  const response = await request(app)
+    .post('/api/users/signup')
+    .send({ email: 'test@gmail.com', password: 'password' })
+    .expect(201)
+
+  expect(response.get('Set-Cookie')).toBeDefined()
+})
