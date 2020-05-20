@@ -46,6 +46,6 @@ it('登入成功後需設置 cookie', async () => {
       password: 'password',
     })
     .expect(200)
-  console.log(response.get('Set-Cookie'))
+
   expect(response.get('Set-Cookie')).toBeDefined()
 })
