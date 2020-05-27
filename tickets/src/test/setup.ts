@@ -1,13 +1,12 @@
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
-import request from 'supertest'
-import { app } from '../app'
 import jwt from 'jsonwebtoken'
 
 declare global {
   namespace NodeJS {
     interface Global {
       signin(): string[]
+      createMongoId(): string
     }
   }
 }
@@ -62,4 +61,8 @@ global.signin = () => {
 
   // return a string thats the cookie with the encode data
   return [`express:sess=${base64}`]
+}
+
+global.createMongoId = () => {
+  return new mongoose.Types.ObjectId().toHexString()
 }
