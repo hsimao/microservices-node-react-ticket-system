@@ -19,8 +19,10 @@ stan.on('connect', () => {
     .subscriptionOptions()
     // 手動判斷是否接收成功，若 30 秒內沒有成功將會自動找另外的 queue 發送, 直到成功
     .setManualAckMode(true)
+    .setDeliverAllAvailable() // 每次重啟 listen port 都會重新執行之前執行過的所有 subscrip 任務
+    .setDurableName('accounting-service') // 將會記錄訂閱狀態，有發出去成功後會標記，將在下次重啟時不用在重新發送
 
-  const subscription = stan.subscribe('ticket:created', 'orders-service-queue-group', options)
+  const subscription = stan.subscribe('ticket:created', 'queue-group-name', options)
 
   subscription.on('message', (msg: Message) => {
     const data = msg.getData()
