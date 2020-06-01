@@ -11,6 +11,8 @@ declare global {
   }
 }
 
+jest.mock('../nats-wrapper')
+
 let mongo: any
 
 beforeAll(async () => {
@@ -25,8 +27,9 @@ beforeAll(async () => {
   })
 })
 
-// 進行每次測試前, 刪除所有 mongo 資料
+// 進行每次測試前, 刪除所有 mongo 與 mock 資料
 beforeEach(async () => {
+  jest.clearAllMocks()
   const collections = await mongoose.connection.db.collections()
 
   for (let collection of collections) {
