@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { Order, OrderStatus } from './order'
 
 interface TicketAttrs {
   title: string
@@ -8,6 +9,7 @@ interface TicketAttrs {
 export interface TicketDoc extends mongoose.Document {
   title: string
   price: number
+  isReserved(): Promise<boolean>
 }
 
 interface TicketModel extends mongoose.Model<TicketDoc> {
@@ -38,6 +40,22 @@ const ticketSchema = new mongoose.Schema(
 
 ticketSchema.statics.build = (attrs: TicketAttrs) => {
   return new Ticket(attrs)
+}
+
+// 確認票券有沒有被保留
+// 搜尋所有訂單內是否有相同票券
+// 判斷訂單狀態是否建立 Created
+// 判斷訂單狀態是否保留中 AwaitingPayment
+// 判斷訂單狀態是否已完成 Complete
+ticketSchema.methods.isReserved = async function() {
+  const existingOrder = await Order.findOne({
+    ticket: this,
+    status: {
+      $in: [OrderStatus.Created, OrderStatus.AwaitingPayment, OrderStatus.Complete],
+    },
+  })
+
+  return !!existingOrder
 }
 
 const Ticket = mongoose.model<TicketDoc, TicketModel>('Ticket', ticketSchema)
