@@ -4,6 +4,7 @@ import { Ticket } from '../../models/ticket'
 
 const buildTicket = async () => {
   const ticket = Ticket.build({
+    id: await global.createMongoId(),
     title: 'concert',
     price: 20,
   })

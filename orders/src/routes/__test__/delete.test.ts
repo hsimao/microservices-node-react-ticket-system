@@ -7,6 +7,7 @@ import { natsWrapper } from '../../nats-wrapper'
 it('returns an error if one user tries to delete anther users order', async () => {
   // Create a ticket
   const ticket = Ticket.build({
+    id: await global.createMongoId(),
     title: 'concert',
     price: 20,
   })
@@ -33,6 +34,7 @@ it('returns an error if one user tries to delete anther users order', async () =
 it('marks on order as cancelled', async () => {
   // create a ticket with Ticket Model
   const ticket = Ticket.build({
+    id: await global.createMongoId(),
     title: 'concert',
     price: 20,
   })
@@ -63,6 +65,7 @@ it('marks on order as cancelled', async () => {
 it('emits a order cancelled event', async () => {
   // create a ticket with Ticket Model
   const ticket = Ticket.build({
+    id: await global.createMongoId(),
     title: 'concert',
     price: 20,
   })
