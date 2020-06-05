@@ -54,3 +54,15 @@ it('acks the message', async () => {
 
   expect(msg.ack).toHaveBeenCalled()
 })
+
+// 當 version 號碼不是下一個，則不能呼叫 ack
+it('does not call ack if the event has a skipped version number', async () => {
+  const { msg, data, listener } = await setup()
+
+  data.version = 10
+  try {
+    await listener.onMessage(data, msg)
+  } catch (err) {}
+
+  expect(msg.ack).not.toHaveBeenCalled()
+})
