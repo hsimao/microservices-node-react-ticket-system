@@ -18,7 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hsimao-tickets/common": "^1.0.18",
+    "@hsimao-tickets/common": "^1.0.19",
     "@types/bull": "^3.13.0",
     "bull": "^3.14.0",
     "ts-node-dev": "^1.0.0-pre.44",
