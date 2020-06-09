@@ -2,6 +2,9 @@ import request from 'supertest'
 import { OrderStatus } from '@hsimao-tickets/common'
 import { app } from '../../app'
 import { Order } from '../../models/order'
+import { stripe } from '../../stripe'
+
+jest.mock('../../stripe')
 
 it('returns a 404 when purchasing an order that does not exist', async () => {
   await request(app)
@@ -54,4 +57,33 @@ it('returns a 400 when purchasing a cancelled order', async () => {
       token: '1234567',
     })
     .expect(400)
+})
+
+it('returns a 204 with valid inputs', async () => {
+  const userId = await global.createMongoId()
+
+  const order = Order.build({
+    id: await global.createMongoId(),
+    userId,
+    version: 0,
+    price: 20,
+    status: OrderStatus.Created,
+  })
+  await order.save()
+
+  await request(app)
+    .post('/api/payments')
+    .set('Cookie', global.signin(userId))
+    .send({
+      token: 'tok_visa', // stripe 測試模式會回傳成功的 token
+      orderId: order.id,
+    })
+    .expect(201)
+
+  // 取得送到 stripe charges.create api 的參數，並檢查
+  const chargeOptions = (stripe.charges.create as jest.Mock).mock.calls[0][0]
+  console.log('chargeOptions', chargeOptions)
+  expect(chargeOptions.source).toEqual('tok_visa')
+  expect(chargeOptions.amount).toEqual(order.price * 100)
+  expect(chargeOptions.currency).toEqual('TWD')
 })

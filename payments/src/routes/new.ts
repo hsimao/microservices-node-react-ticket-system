@@ -8,6 +8,7 @@ import {
   NotFoundError,
   OrderStatus,
 } from '@hsimao-tickets/common'
+import { stripe } from '../stripe'
 import { Order } from '../models/order'
 
 const router = express.Router()
@@ -41,7 +42,13 @@ router.post(
       throw new BadRequestError('Connot pay for an cancelled order')
     }
 
-    res.send({ success: true })
+    await stripe.charges.create({
+      currency: 'TWD',
+      amount: order.price * 100,
+      source: token,
+    })
+
+    res.status(201).send({ success: true })
   }
 )
 
