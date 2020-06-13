@@ -10,7 +10,7 @@ import { natsWrapper } from '../nats-wrapper'
 const router = express.Router()
 
 // 訂單過期時間 15 分鐘
-const EXPIRATION_WINDOW_SECONDS = 15 * 60
+const EXPIRATION_WINDOW_SECONDS = 1 * 60
 
 router.post(
   '/api/orders',
