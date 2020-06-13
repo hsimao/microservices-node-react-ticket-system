@@ -44,8 +44,8 @@ router.post(
     )
 
     // 將 JWT 儲存到 session
-    req.session! = {
-      jwt: userJwt!,
+    req.session = {
+      jwt: userJwt,
     }
 
     res.status(200).send(existingUser)
