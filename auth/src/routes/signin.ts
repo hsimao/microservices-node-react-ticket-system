@@ -42,11 +42,10 @@ router.post(
       },
       process.env.JWT_KEY! // 後面驚嘆號要讓 typescript 忽略警告
     )
-    console.log('userJwt', userJwt)
 
     // 將 JWT 儲存到 session
     req.session = {
-      jwt: userJwt,
+      jwt: userJwt!,
     }
 
     res.status(200).send(existingUser)
